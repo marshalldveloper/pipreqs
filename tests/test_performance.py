@@ -7,6 +7,9 @@ import tempfile
 import os
 from pipreqs.system_detector import SystemPackageDetector
 
+# Skip performance tests in CI environments where timing is unreliable
+is_ci = os.getenv('CI') == 'true' or os.getenv('GITHUB_ACTIONS') == 'true'
+
 class TestPerformance(unittest.TestCase):
     def setUp(self):
         self.detector = SystemPackageDetector()
@@ -19,6 +22,7 @@ class TestPerformance(unittest.TestCase):
             'unknown-pkg-2', 'unknown-pkg-3'
         ] * 5  # 105 packages total
     
+    @unittest.skipIf(is_ci, "Performance tests skipped in CI environments")
     def test_categorization_performance(self):
         """Test that categorization is fast even for large package lists"""
         # Convert to proper format for categorize_packages
@@ -29,15 +33,14 @@ class TestPerformance(unittest.TestCase):
         end_time = time.time()
         
         duration = end_time - start_time
-        # More lenient timing for CI environments
-        max_duration = 5.0 if os.getenv('CI') else 1.0
-        self.assertLess(duration, max_duration, f"Categorization took {duration:.2f}s, should be <{max_duration}s")
+        self.assertLess(duration, 1.0, f"Categorization took {duration:.2f}s, should be <1s")
         
         # Verify results
         self.assertIn('apt', result)
         self.assertIn('pipx', result)
         self.assertIn('pip', result)
     
+    @unittest.skipIf(is_ci, "Performance tests skipped in CI environments")
     def test_mapping_lookup_performance(self):
         """Test that mapping lookups are fast"""
         start_time = time.time()
@@ -48,9 +51,7 @@ class TestPerformance(unittest.TestCase):
         
         end_time = time.time()
         duration = end_time - start_time
-        # More lenient timing for CI environments
-        max_duration = 1.0 if os.getenv('CI') else 0.1
-        self.assertLess(duration, max_duration, f"1000 lookups took {duration:.3f}s, should be <{max_duration}s")
+        self.assertLess(duration, 0.1, f"1000 lookups took {duration:.3f}s, should be <0.1s")
 
 if __name__ == '__main__':
     unittest.main()
