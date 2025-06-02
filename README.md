@@ -96,17 +96,27 @@ This approach is particularly effective with agentic development tools:
 
 ```bash
 # Rapid setup for Claude Code sessions
+# Create and enter project directory
 mkdir ai-project
 cd ai-project
 
-# Analyze existing codebase dependencies
+# Initialize uv project (creates .venv automatically)
+uv init .
+
+# Analyze existing codebase dependencies (if there is existing code)
 pipreqs . --system-packages --categorize > setup_plan.txt
 
-# Execute optimized setup
+# Install system packages
 sudo apt install $(grep "apt install" setup_plan.txt | cut -d' ' -f3-)
+
+# Install global tools with pipx
 pipx install $(grep "pipx install" setup_plan.txt | cut -d' ' -f3-)
-uv init .
+
+# Add Python dependencies to the uv project
 uv add $(grep "pip install" setup_plan.txt | cut -d' ' -f3-)
+
+# Activate the uv environment
+source .venv/bin/activate
 
 # Start AI-assisted development
 claude-code
