@@ -172,6 +172,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.requirements_path) == 1
@@ -200,6 +204,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.requirements_path) == 1
@@ -225,6 +233,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.alt_requirement_path) == 1
@@ -254,6 +266,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.requirements_path) == 1
@@ -288,6 +304,13 @@ class TestPipreqs(unittest.TestCase):
                 "--force": True,
                 "--proxy": None,
                 "--pypi-server": "nonexistent",
+                "--diff": None,
+                "--clean": None,
+                "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             },
         )
 
@@ -308,6 +331,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(os.path.join(self.project_with_ignore_directory, "requirements.txt"), "r") as f:
@@ -331,6 +358,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": "no-pin",
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(os.path.join(self.project_with_ignore_directory, "requirements.txt"), "r") as f:
@@ -354,6 +385,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": "gt",
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(os.path.join(self.project_with_ignore_directory, "requirements.txt"), "r") as f:
@@ -379,6 +414,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": "compat",
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(os.path.join(self.project_with_ignore_directory, "requirements.txt"), "r") as f:
@@ -404,6 +443,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.requirements_path) == 1
@@ -419,6 +462,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": self.requirements_path,
                 "--mode": "non-pin",
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(self.requirements_path, "r") as f:
@@ -443,6 +490,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(self.requirements_path) == 1
@@ -458,6 +509,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": self.requirements_path,
                 "--mode": "non-pin",
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         with open(self.requirements_path, "r") as f:
@@ -510,6 +565,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         pipreqs.init(
@@ -524,6 +583,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
 
@@ -537,7 +600,7 @@ class TestPipreqs(unittest.TestCase):
         Test the function get_all_imports() using .ipynb file
         """
         self.mock_scan_notebooks()
-        imports = pipreqs.get_all_imports(self.project_with_notebooks)
+        imports = pipreqs.get_all_imports(self.project_with_notebooks, ignore_errors=True)
         for item in imports:
             self.assertTrue(item.lower() in self.modules, "Import is missing: " + item)
         not_desired_imports = ["time", "logging", "curses", "__future__", "django", "models", "FastAPI", "sklearn"]
@@ -631,6 +694,10 @@ class TestPipreqs(unittest.TestCase):
                 "--clean": None,
                 "--mode": None,
                 "--scan-notebooks": False,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
         assert os.path.exists(notebook_requirement_path) == 1
@@ -652,6 +719,10 @@ class TestPipreqs(unittest.TestCase):
                 "--diff": None,
                 "--clean": None,
                 "--mode": None,
+                "--system-packages": False,
+                "--categorize": False,
+                "--output-format": False,
+                "--ignore-errors": False
             }
         )
 
