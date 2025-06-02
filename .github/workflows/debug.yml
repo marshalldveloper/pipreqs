@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov pytest-benchmark
         pip install -e .
     
     - name: Debug environment
@@ -41,4 +41,8 @@ jobs:
     
     - name: Run pytest directly
       run: |
-        python -m pytest tests/ -v -s --tb=long
+        python -m pytest tests/ -v -s --tb=long --benchmark-skip
+    
+    - name: Run performance benchmarks
+      run: |
+        python -m pytest tests/test_performance.py -v --benchmark-only
