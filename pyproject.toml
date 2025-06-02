@@ -43,3 +43,10 @@ pipreqs = "pipreqs.pipreqs:main"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "--ignore=tests/_data --ignore=tests/_data_clean --ignore=tests/_data_ignore --ignore=tests/_data_duplicated_deps --ignore=tests/_invalid_data --ignore=tests/_data_notebook --ignore=tests/_data_pyw"
