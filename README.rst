@@ -17,6 +17,7 @@
         :target: https://pypi.python.org/pypi/pipreqs
 
 
+**Documentation**: `Installation <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_ | `Usage Guide <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_ | `Development <https://github.com/JOravetz/pipreqs/blob/main/CONTRIBUTING.md>`_
 
 Installation
 ------------
@@ -24,6 +25,8 @@ Installation
 .. code-block:: sh
 
     pip install pipreqs
+
+For more installation options (development install, pipx, virtual environments, etc.), see `INSTALL.md <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_.
 
 Obs.: if you don't want support for jupyter notebooks, you can install pipreqs without the dependencies that give support to it. 
 To do so, run:
@@ -35,6 +38,12 @@ To do so, run:
 
 Usage
 -----
+
+For comprehensive usage examples and best practices, see `USAGE.md <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_.
+
+Quick start::
+
+    pipreqs /path/to/project
 
 ::
 
