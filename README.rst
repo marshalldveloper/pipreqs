@@ -17,7 +17,7 @@
         :target: https://pypi.python.org/pypi/pipreqs
 
 
-**Documentation**: `Installation <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_ | `Usage Guide <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_ | `Development <https://github.com/JOravetz/pipreqs/blob/main/CONTRIBUTING.md>`_
+**Documentation**: `Installation <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_ | `Usage Guide <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_ | `AI/Agentic Development <https://github.com/JOravetz/pipreqs/blob/main/AGENTIC_DEVELOPMENT.md>`_ | `Contributing <https://github.com/JOravetz/pipreqs/blob/main/CONTRIBUTING.md>`_
 
 Installation
 ------------
