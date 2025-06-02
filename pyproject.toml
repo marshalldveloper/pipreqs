@@ -34,8 +34,8 @@ flake8 = ">=6.1.0"
 tox = ">=4.11.3"
 coverage = ">=7.3.2"
 sphinx = {version = ">=7.2.6", python = ">=3.9"}
-pytest = ">=8.3.5"
-pytest-cov = ">=6.1.1"
+pytest = ">=7.0.0"
+pytest-cov = ">=4.0.0"
 
 [tool.poetry.scripts]
 pipreqs = "pipreqs.pipreqs:main"
