@@ -31,7 +31,11 @@ jobs:
                   uv pip install --system tox tox-gh-actions
 
             - name: Test with tox
-              run: tox -vv
+              run: |
+                  echo "Python version: ${{ matrix.python-version }}"
+                  which python
+                  python --version
+                  tox -vv
 
     coverage_report:
         needs: run_tests
