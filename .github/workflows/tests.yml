@@ -33,9 +33,8 @@ jobs:
             - name: Test with tox
               run: |
                   echo "Python version: ${{ matrix.python-version }}"
-                  which python
                   python --version
-                  tox -vv
+                  tox
 
     coverage_report:
         needs: run_tests
