@@ -17,7 +17,7 @@
         :target: https://pypi.python.org/pypi/pipreqs
 
 
-**Documentation**: `Installation <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_ | `Usage Guide <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_ | `AI/Agentic Development <https://github.com/JOravetz/pipreqs/blob/main/AGENTIC_DEVELOPMENT.md>`_ | `Contributing <https://github.com/JOravetz/pipreqs/blob/main/CONTRIBUTING.md>`_
+**Documentation**: `Installation <https://github.com/JOravetz/pipreqs/blob/main/INSTALL.md>`_ | `Usage Guide <https://github.com/JOravetz/pipreqs/blob/main/USAGE.md>`_ | `UV Integration <https://github.com/JOravetz/pipreqs/blob/main/UV_INTEGRATION.md>`_ | `AI/Agentic Development <https://github.com/JOravetz/pipreqs/blob/main/AGENTIC_DEVELOPMENT.md>`_ | `Contributing <https://github.com/JOravetz/pipreqs/blob/main/CONTRIBUTING.md>`_
 
 Installation
 ------------
@@ -99,3 +99,16 @@ Why not pip freeze?
 - ``pip freeze`` only saves the packages that are installed with ``pip install`` in your environment.
 - ``pip freeze`` saves all packages in the environment including those that you don't use in your current project (if you don't have ``virtualenv``).
 - and sometimes you just need to create ``requirements.txt`` for a new project without installing modules.
+
+Works great with UV
+-------------------
+
+pipreqs + `UV <https://github.com/astral-sh/uv>`_ = Lightning-fast Python development:
+
+.. code-block:: sh
+
+    # Generate minimal requirements
+    pipreqs . --force
+    
+    # Install with UV (10-100x faster than pip)
+    uv pip install -r requirements.txt
