@@ -2,16 +2,16 @@
 ``pipreqs`` - Generate requirements.txt file for any project based on imports
 =============================================================================
 
-.. image:: https://github.com/bndr/pipreqs/actions/workflows/tests.yml/badge.svg
-        :target: https://github.com/bndr/pipreqs/actions/workflows/tests.yml
+.. image:: https://github.com/JOravetz/pipreqs/actions/workflows/tests.yml/badge.svg
+        :target: https://github.com/JOravetz/pipreqs/actions/workflows/tests.yml
 
 
 .. image:: https://img.shields.io/pypi/v/pipreqs.svg
         :target: https://pypi.python.org/pypi/pipreqs
 
 
-.. image:: https://codecov.io/gh/bndr/pipreqs/branch/master/graph/badge.svg?token=0rfPfUZEAX
-        :target: https://codecov.io/gh/bndr/pipreqs
+.. image:: https://codecov.io/gh/JOravetz/pipreqs/branch/main/graph/badge.svg
+        :target: https://codecov.io/gh/JOravetz/pipreqs
 
 .. image:: https://img.shields.io/pypi/l/pipreqs.svg
         :target: https://pypi.python.org/pypi/pipreqs
