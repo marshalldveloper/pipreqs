@@ -37,6 +37,9 @@ Options:
                           <gt>     | e.g. Flask>=1.1.2
                           <no-pin> | e.g. Flask
     --scan-notebooks      Look for imports in jupyter notebook files.
+    --system-packages     Enable system package detection (apt)
+    --categorize          Categorize packages by installation method
+    --output-format <fmt> Output format: requirements, apt, categorized, json
 """
 from contextlib import contextmanager
 import os
@@ -45,12 +48,14 @@ import re
 import logging
 import ast
 import traceback
+import json
 from docopt import docopt
 import requests
 from yarg import json2package
 from yarg.exceptions import HTTPError
 
 from pipreqs import __version__
+from pipreqs.system_detector import SystemPackageDetector
 
 REGEXP = [re.compile(r"^import (.+)$"), re.compile(r"^from ((?!\.+).*?) import (?:.*)$")]
 DEFAULT_EXTENSIONS = [".py", ".pyw"]
@@ -225,6 +230,83 @@ def generate_requirements_file(path, imports, symbol):
 
 def output_requirements(imports, symbol):
     generate_requirements_file("-", imports, symbol)
+
+
+def generate_apt_requirements(categorized):
+    """Generate apt package installation instructions."""
+    detector = SystemPackageDetector()
+    apt_packages = categorized.get('apt', [])
+    
+    if not apt_packages:
+        return "# No packages available via apt\n"
+    
+    output = ["# APT packages available for this project"]
+    output.append("# Install with:")
+    output.append("# " + detector.get_apt_install_command(apt_packages))
+    output.append("")
+    output.append("# Package details:")
+    
+    for pkg in apt_packages:
+        status = "installed" if pkg.get('installed', False) else "not installed"
+        output.append(f"# {pkg['system_name']} - {pkg['name']} ({status})")
+    
+    return "\n".join(output)
+
+
+def generate_categorized_requirements(categorized):
+    """Generate categorized requirements output."""
+    detector = SystemPackageDetector()
+    return detector.generate_categorized_output(categorized)
+
+
+def generate_json_output(imports, categorized=None):
+    """Generate JSON output with detailed package information."""
+    output = {
+        "packages": imports,
+        "total": len(imports)
+    }
+    
+    if categorized:
+        output["categorized"] = {
+            "apt": categorized.get('apt', []),
+            "pipx": categorized.get('pipx', []),
+            "pip": categorized.get('pip', [])
+        }
+        output["summary"] = {
+            "apt_available": len(categorized.get('apt', [])),
+            "pipx_recommended": len(categorized.get('pipx', [])),
+            "pip_only": len(categorized.get('pip', []))
+        }
+    
+    return json.dumps(output, indent=2)
+
+
+def get_imports_info_with_system(imports, pypi_server="https://pypi.python.org/pypi/", proxy=None, system_packages=False):
+    """Get package info, checking system packages first if enabled."""
+    result = []
+    detector = SystemPackageDetector() if system_packages else None
+    
+    for item in imports:
+        # Check if available via system package manager first
+        if detector:
+            apt_package = detector.check_apt_package(item)
+            if apt_package:
+                # Package is available via apt, use system info
+                installed = detector.check_installed_dpkg(apt_package)
+                result.append({
+                    "name": item,
+                    "version": "",  # System packages don't need version pinning
+                    "system_name": apt_package,
+                    "installed": installed,
+                    "source": "apt"
+                })
+                logging.info(f'Found system package for "{item}": {apt_package}')
+                continue
+        
+        # Fall back to PyPI query
+        result.extend(get_imports_info([item], pypi_server, proxy))
+    
+    return result
 
 
 def get_imports_info(imports, pypi_server="https://pypi.python.org/pypi/", proxy=None):
@@ -572,7 +654,13 @@ def init(args):
             x.lower() not in [x["name"] for x in local]
         ]
 
-        imports = local + get_imports_info(difference, proxy=proxy, pypi_server=pypi_server)
+        # Use system-aware import checking if enabled
+        if args["--system-packages"]:
+            imports = local + get_imports_info_with_system(
+                difference, proxy=proxy, pypi_server=pypi_server, system_packages=True
+            )
+        else:
+            imports = local + get_imports_info(difference, proxy=proxy, pypi_server=pypi_server)
     # sort imports based on lowercase name of package, similar to `pip freeze`.
     imports = sorted(imports, key=lambda x: x["name"].lower())
 
@@ -595,12 +683,46 @@ def init(args):
     else:
         symbol = "=="
 
+    # Handle system package detection and categorization
+    categorized = None
+    if args["--system-packages"] or args["--categorize"]:
+        detector = SystemPackageDetector()
+        categorized = detector.categorize_packages(imports)
+        
+        if args["--categorize"] and not args["--output-format"]:
+            # Default to categorized format when --categorize is used
+            args["--output-format"] = "categorized"
+    
+    # Handle different output formats
+    output_format = args.get("--output-format", "requirements")
+    
     if args["--print"]:
-        output_requirements(imports, symbol)
+        if output_format == "apt" and categorized:
+            print(generate_apt_requirements(categorized))
+        elif output_format == "categorized" and categorized:
+            print(generate_categorized_requirements(categorized))
+        elif output_format == "json":
+            print(generate_json_output(imports, categorized))
+        else:
+            output_requirements(imports, symbol)
         logging.info("Successfully output requirements")
     else:
-        generate_requirements_file(path, imports, symbol)
-        logging.info("Successfully saved requirements file in " + path)
+        if output_format == "apt" and categorized:
+            with open(path.replace("requirements.txt", "apt-requirements.txt"), "w") as f:
+                f.write(generate_apt_requirements(categorized))
+            logging.info("Successfully saved apt requirements file")
+        elif output_format == "categorized" and categorized:
+            with open(path.replace("requirements.txt", "categorized-requirements.txt"), "w") as f:
+                f.write(generate_categorized_requirements(categorized))
+            logging.info("Successfully saved categorized requirements file")
+        elif output_format == "json":
+            json_path = path.replace("requirements.txt", "requirements.json")
+            with open(json_path, "w") as f:
+                f.write(generate_json_output(imports, categorized))
+            logging.info("Successfully saved requirements as JSON in " + json_path)
+        else:
+            generate_requirements_file(path, imports, symbol)
+            logging.info("Successfully saved requirements file in " + path)
 
 
 def main():  # pragma: no cover
