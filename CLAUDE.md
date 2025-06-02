@@ -30,6 +30,12 @@ poetry run tox
 
 # Run a specific test
 poetry run python -m unittest tests.test_pipreqs.TestPipreqs.test_method_name
+
+# Run performance tests with benchmarking
+poetry run pytest tests/test_performance.py --benchmark-only
+
+# Run tests without benchmarking
+poetry run pytest tests/ --benchmark-skip
 ```
 
 ### Linting
